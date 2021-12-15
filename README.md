@@ -9,4 +9,4 @@ All the user will know is that their desired task was accomplished without havin
 ![screenshot of teamProfileGenerator](https://github.com/jcnolan9/employeeTracker/blob/main/Screenshot.PNG)
 
 ## Link to Video
-https://watch.screencastify.com/v/xa88nFzU5SdM6m3ahpAP
+https://watch.screencastify.com/v/yClWpcZMXu1b2PiVwxvG
