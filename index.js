@@ -32,8 +32,31 @@ function init() {
     .then((response) => {
         if(response.pickTask[0] == "View All Employees") {
             viewTable("employee")
+            init()
         }
-        
+        else if(response.pickTask[0] == "Add Employee") {
+            addEmployeePrompt()
+            init()
+        }
+        else if(response.pickTask[0] == "Update Employee Role") {
+
+        }
+        else if(response.pickTask[0] == "View All Roles") {
+            viewTable("role")
+            init()
+        }
+        else if(response.pickTask[0] == "Add Role") {
+            addRolePrompt()
+            init()
+        }
+        else if(response.pickTask[0] == "View All Departments") {
+            viewTable("department")
+            init()
+        }
+        else if(response.pickTask[0] == "Add Department") {
+            addDepartmentPrompt()
+            init()
+        }
     })
     .catch((err) => {
         console.log(err)
@@ -47,8 +70,121 @@ function viewTable(table) {
     })
 }
 
-function addEmployee()  {
-
+function addDepartment(dept)  {
+    db.query(`INSERT INTO department(name) VALUES (${JSON.stringify(dept)});`)
 }
+
+function addRole(role, salary, dept_id) {
+    db.query(`INSERT INTO role(title, salary, department_id) VALUES (${JSON.stringify(role)}, ${JSON.stringify(salary)}, ${JSON.stringify(dept_id)});`)
+}
+
+function addEmployee(firstName, lastName, roleID, managerID) {
+    db.query(`INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUES (${JSON.stringify(firstName)}, ${JSON.stringify(lastName)}, 
+    ${JSON.stringify(roleID)}, ${managerID});`)
+}
+
+function updateEmployee(employeeID, newRoleID) {
+    db.query(`UPDATE employee SET roleID = ${JSON.stringify(newRoleID)} WHERE id = ${JSON.stringify(employeeID)}`)
+
+function addDepartmentPrompt() {
+    inq.prompt([
+        {
+            type: 'input',
+            message: 'Enter the name of the new department:',
+            name: 'new_dept'
+        }
+    ])
+    .then((response) => {
+        // console.log(response.new_dept)
+        addDepartment(response.new_dept)
+        console.log('New department, ' + response.new_dept + ', added to the database')
+    })
+    .catch((err) => {
+        console.log(err)
+    })
+}
+
+function addRolePrompt() {
+    inq.prompt([
+        {
+            type: 'input',
+            message: "Enter the name of the role:",
+            name: 'role' 
+        },
+        {
+            type: 'input',
+            message: 'Enter the salary of the role:',
+            name: 'salary'
+        },
+        {
+            type: 'input',
+            message: 'Enter the department ID of the role',
+            name: 'department'
+        }
+    ])
+    .then((response) => {
+        addRole(response.role, response.salary, response.department)
+        console.log('New role, ' + response.role + ', added to the database')
+    })
+    .catch((err) => {
+        console.log(err)
+    }) 
+}
+
+function addEmployeePrompt () {
+    inq.prompt([
+        {
+            type: 'input',
+            message: "Enter the first name of the employee:",
+            name: 'first_name' 
+        },
+        {
+            type: 'input',
+            message: 'Enter the last name of the employee:',
+            name: 'last_name'
+        },
+        {
+            type: 'input',
+            message: 'Enter the role ID of the employee',
+            name: 'roleID'
+        }
+        {
+            type: 'input',
+            message: 'Enter the ID of the employee\'s manager if the employee has a manager. If not enter "null"',
+            name: 'managerID'
+        }
+    ])
+    .then((response) => {
+        addEmployee(response.first_name, response.last_name, response.roleID, response.managerID)
+        console.log('New employee, ' + response.first_name + ' ' + response.last_name + ', added to the database')
+    })
+    .catch((err) => {
+        console.log(err)
+    }) 
+}
+
+function updateEmployeePrompt() {
+    inq.prompt([
+        {
+            type: 'input',
+            message: 'Enter the employee ID of the employee you wish to update:',
+            name: 'employeeID'
+        },
+        {
+            type: 'input',
+            message: 'Enter the role ID of the employee\'s new role:',
+            name: 'newRoleID'
+        }
+    ])
+    .then((response) => {
+        // console.log(response.new_dept)
+        updateEmployee(response.employeeID, response.newRoleID)
+        console.log('Employee, ' + response.employeeID + ', has had their role updated in the database')
+    })
+    .catch((err) => {
+        console.log(err)
+    })
+}
+
 
 init()
